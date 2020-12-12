@@ -459,7 +459,7 @@ sudo docker update mysql --restart=always
 
 - 使用MySQL Workbench 8.0 CE或者其他数据库连接软件连接数据库
 
-  ![数据库配置maven](readme_pics\数据库配置maven.png)
+  ![MySQL_Workbench连接数据库](readme_pics\MySQL_Workbench连接数据库.png)
 
 - 创建数据库，编码方式使用utf8mb4，名字依次为
 
@@ -477,13 +477,56 @@ sudo docker update mysql --restart=always
 
 使用人人开源中的[renren-fast](https://gitee.com/renrenio/renren-fast)作为脚手架。
 
-右下角提示时，允许自动配置。
+克隆项目
 
-// todo
+```shell
+git clone https://gitee.com/renrenio/renren-fast.git
+```
+
+删除项目的.git文件夹，复制项目到项目目录下（与gulimall-***同级目录）
+
+添加到总的pom，允许maven自动导入（右下角会提示）
+
+```xml
+<modules>
+    <module>gulimall-coupon</module>
+    <module>gulimall-member</module>
+    <module>gulimall-order</module>
+    <module>gulimall-product</module>
+    <module>gulimall-ware</module>
+    <module>renren-fast</module>
+</modules>
+```
+
+创建数据库和表
+
+- 编码方式使用utf8mb4，名字为gulimall_admin
+
+- 选中该数据库，复制renren-fast/db/mysql.sql内容，执行。
+
+修改renren-fast的application-dev.yml中数据库信息，更改ip和数据库名称以及用户名密码
+
+```yml
+url: jdbc:mysql://192.168.56.10:3306/gulimall_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+username: root
+password: root
+```
+
+执行renren-fast，浏览器访问http://localhost:8080/renren-fast/
+
+显示如下
+
+```json
+{"msg":"invalid token","code":401}
+```
+
+
 
 ### 搭建前端
 
 使用人人开源中的[renren-fast-vue](https://gitee.com/renrenio/renren-fast-vue)作为脚手架
+
+克隆项目
 
 配置node
 
@@ -505,6 +548,10 @@ npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/ch
 # 运行
 npm run dev
 ```
+
+打开网页即可看到页面。
+
+后端同时运行则可以进行登录等操作，账号admin，密码admin。
 
 
 
@@ -675,38 +722,38 @@ npm run dev
 ```xml
 <description>每一个微服务公共的依赖，如bean，工具类等。</description>
 
-    <dependencies>
-        <!-- lombok -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
-        </dependency>
-        <!-- httpcomponents -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.12</version>
-        </dependency>
-        <!-- StringUtils -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- mabatis plus -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-    </dependencies>
+<dependencies>
+    <!-- lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.8</version>
+    </dependency>
+    <!-- httpcomponents -->
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.12</version>
+    </dependency>
+    <!-- StringUtils -->
+    <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+    </dependency>
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>servlet-api</artifactId>
+        <version>2.5</version>
+        <scope>provided</scope>
+    </dependency>
+    <!-- mabatis plus -->
+    <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>3.2.0</version>
+    </dependency>
+</dependencies>
 ```
 
 将renren-fast中的一些类复制到gulimall-common中
