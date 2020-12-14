@@ -930,29 +930,365 @@ server:
 
 
 
+## 版本变更
+
+由于之前使用的一些配置版本和教程不一致，出现了很多不必要的问题，所以首先改一下版本。
+
+gulimall-***(coupon/member/order/product/ware)
+
+```xml
+<!-- 修改spring boot版本 -->
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.8.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+</parent>
+
+<!-- 修改spring-cloud.version -->
+<properties>
+    <java.version>1.8</java.version>
+    <spring-cloud.version>Greenwich.SR3</spring-cloud.version>
+</properties>
+
+<!-- 删掉repositories，为了保持一致所以删了，不知道有什么后果 -->
+```
+
+然后修改test文件。
+
+
+
 ## 分布式配置
 
+### nacos注册中心
+
+可以参考[官方中文教程](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)。
+
+1. 在common中添加alibaba cloud和nacos的依赖
+
+   ```xml
+   <!--nacos注册中心-->
+   <dependencies>
+       ...
+       <dependency>
+           <groupId>com.alibaba.cloud</groupId>
+           <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+       </dependency>
+   </dependencies>
+   
+   <dependencyManagement>
+       <dependencies>
+           <dependency>
+               <groupId>com.alibaba.cloud</groupId>
+               <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+               <!--教程中用的2.1.0.RELEASE版本-->
+               <!--如果使用教程的版本，会找不到nacos服务器，原因没找到-->
+               <version>2.1.2.RELEASE</version>
+               <type>pom</type>
+               <scope>import</scope>
+           </dependency>
+       </dependencies>
+   </dependencyManagement>
+   ```
+
+2. 在对应的微服务（以gulimall-member为例）的application.yml（没有该文件就新建）添加nacos服务器地址，要注册的微服务名称
+
+   ```yml
+   spring:
+     ...
+     cloud:
+       nacos:
+         server-addr: 127.0.0.1:8848
+     application:
+       name: gulimall-member
+   ```
+
+3. 在GulimallMemberApplication.java中添加注解@EnableDiscoveryClient
+
+   ```java
+   @EnableDiscoveryClient
+   @SpringBootApplication
+   public class GulimallMemberApplication {
+   
+       public static void main(String[] args) {
+           SpringApplication.run(GulimallMemberApplication.class, args);
+       }
+   
+   }
+   ```
+
+4. 下载nacos1.1.3(Aug 6th, 2019)并运行
+
+   到网页[1.1.3(Aug 6th, 2019)](https://github.com/alibaba/nacos/releases/tag/1.1.3)下载[nacos-server-1.1.3.zip](https://github.com/alibaba/nacos/releases/download/1.1.3/nacos-server-1.1.3.zip)。
+
+   下载后解压，双击bin目录下startup.cmd运行，打开网址 http://127.0.0.1:8848/nacos/ ，账号密码均为nacos，登陆后点开服务管理->服务列表。
+
+5. 运行微服务（以gulimall-member为例）
+
+   运行应用，刷新nacos网页的界面可以看到服务。
+
+### openfeign调用已注册的服务
+
+使用member服务调用coupon服务中的，作为示例。
+
+在CouponController中添加被调用的方法membercoupons()
+
+```java
+// 测试远程调用
+@RequestMapping("/member/list")
+public R membercoupons(){
+    CouponEntity couponEntity = new CouponEntity();
+    couponEntity.setCouponName("满100减10");
+    return R.ok().put("coupons",Arrays.asList(couponEntity));
+}
+```
+
+为了在member中调用membercoupons()方法，我们首先需要做如下配置。
+
+1. 在member的pom中引入openfeign依赖（之前已经引入了）
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-openfeign</artifactId>
+   </dependency>
+   ```
+
+2. 声明远程接口
+
+   在gulimall-member中创建com.atguigu.gulimall.member.feign包，用来存放接口。创建接口CouponFeignService
+
+   ```java
+   package com.atguigu.gulimall.member.feign;
+   
+   import com.atguigu.common.utils.R;
+   import org.springframework.cloud.openfeign.FeignClient;
+   import org.springframework.web.bind.annotation.RequestMapping;
+   
+   // 调用的服务名
+   @FeignClient("gulimall-coupon")
+   public interface CouponFeignService {
+   
+       // 被调用的方法对应的url，函数名任意命名，不一定是membercoupons。
+       @RequestMapping("/coupon/coupon/member/list")
+       public R membercoupons();
+   
+   }
+   
+   ```
+
+3. 在GulimallMemberApplication.java中添加@EnableFeignClients注解
+
+   ```java
+   // 远程接口的路径
+   @EnableFeignClients(basePackages = "com.atguigu.gulimall.member.feign")
+   @SpringBootApplication
+   public class GulimallMemberApplication {
+   
+       public static void main(String[] args) {
+           SpringApplication.run(GulimallMemberApplication.class, args);
+       }
+   
+   }
+   ```
+
+然后，我们就可以通过调用接口中的方法来调用coupon中的方法，例如在MemberController中添加如下方法
+
+```java
+@RequestMapping("/coupons")
+public R test(){
+    MemberEntity memberEntity = new MemberEntity();
+    memberEntity.setNickname("张三");
+
+    R membercoupons = couponFeignService.membercoupons();
+    return R.ok().put("member",memberEntity).put("coupons",membercoupons.get("coupons"));
+}
+```
+
+分别运行coupon服务和member服务，输入网址http://localhost:8000/member/member/coupons，输出如下
+
+```json
+{"msg":"success","code":0,"coupons":[{"id":null,"couponType":null,"couponImg":null,"couponName":"满100减10","num":null,"amount":null,"perLimit":null,"minPoint":null,"startTime":null,"endTime":null,"useType":null,"note":null,"publishCount":null,"useCount":null,"receiveCount":null,"enableStartTime":null,"enableEndTime":null,"code":null,"memberLevel":null,"publish":null}],"member":{"id":null,"levelId":null,"username":null,"password":null,"nickname":"张三","mobile":null,"email":null,"header":null,"gender":null,"birth":null,"city":null,"job":null,"sign":null,"sourceType":null,"integration":null,"growth":null,"status":null,"createTime":null}}
+```
 
 
 
+### nacos配置中心
+
+使用配置中心可以将配置信息从application.properties等本地文件移动到nacos，这样做的好处有很多，如多个机器运行同一个服务，那么他们可以共享配置而无需一一配置。
+
+首先说明nacos配置空间的界面，数据集可以理解为配置文件，数据集id可以理解为文件名，命名空间可以理解为文件夹，用来分隔数据集，分组可以看作标签。
+
+![nacos配置中心](readme_pics\nacos配置中心.png)
+
+一个应用可能包含很多个微服务，为了让配置信息更加清晰，可以将一个微服务的配置信息放在一个命名空间中。应用在开发、测试、上线的时候配置一般是不同的，为了区分不同时期的配置，可以用group来标记时期。这些并不是强制的，而是一种习惯性的用法。
+
+以下以coupon为例，说明如何使用nacos配置中心。
+
+1. 在common的pom中引入依赖
+
+   ```xml
+   <!--nacos配置中心-->
+   <dependency>
+       <groupId>com.alibaba.cloud</groupId>
+       <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+   </dependency>
+   ```
+
+2. 在coupon的resources目录下创建bootstrap.properties文件（与application.properties同一级目录），说明微服务的名称和nacos服务器的地址。微服务默认会加载服务器端的public命名空间的默认分组的gulimall-coupon.properties（${spring.application.name}.properties），如果nacos中的配置和本地的重名，优先使用nacos中的配置。
+
+   ```properties
+   spring.application.name=gulimall-coupon
+   spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+   
+   # 指定命名空间ID
+   spring.cloud.nacos.config.namespace=49e0b984-2eef-4ec0-9cb9-27fb0f651715
+   # 指定分组
+   spring.cloud.nacos.config.group=prod
+   
+   # 引入多个配置，这些配置会在下一步创建
+   spring.cloud.nacos.config.extension-configs[0].data-id=datasource.yml
+   spring.cloud.nacos.config.extension-configs[0].group=dev
+   # 如果nacos中的该项配置修改，自动更新
+   spring.cloud.nacos.config.extension-configs[0].refresh=true
+   
+   spring.cloud.nacos.config.extension-configs[1].data-id=mybatis.yml
+   spring.cloud.nacos.config.extension-configs[1].group=dev
+   spring.cloud.nacos.config.extension-configs[1].refresh=true
+   
+   spring.cloud.nacos.config.extension-configs[2].data-id=other.yml
+   spring.cloud.nacos.config.extension-configs[2].group=dev
+   spring.cloud.nacos.config.extension-configs[2].refresh=true
+   ```
+
+3. nacos的网页中添加配置
+
+   首先新建namespace，名字为coupon，然后在该命名空间中创建配置文件，分别为
+
+   gulimall-coupon.properties，group为prod
+
+   ```properties
+   coupon.user.name=zhangsan
+   coupon.user.age=20
+   ```
+
+   datasource.yml，group为dev
+
+   ```yml
+   spring:
+     datasource:
+       username: root
+       password: root
+       url: jdbc:mysql://192.168.56.10:3306/gulimall_sms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+       driver-class-name: com.mysql.cj.jdbc.Driver
+   ```
+
+   mybatis.yml，group为dev
+
+   ```yml
+   mybatis-plus:
+     mapper-locations: classpath:/mapper/**/*.xml
+     global-config:
+       db-config:
+         id-type: auto
+   ```
+
+   other.yml，group为dev
+
+   ```yml
+   spring:
+     cloud:
+       nacos:
+         server-addr: 127.0.0.1:8848
+     application:
+       name: gulimall-coupon
+   
+   server:
+     port: 7000
+   ```
+
+4. 测试配置是否奏效
+
+   在CouponController.java中添加注解@RefreshScope（gulimall-coupon.properties的值变化的话配置会自动更新），并添加访问配置的代码。
+
+   ```java
+   @RefreshScope
+   @RestController
+   @RequestMapping("coupon/coupon")
+   public class CouponController {
+       
+       ....
+           
+       @Value("${coupon.user.name}")
+       private String name;
+       @Value("${coupon.user.age}")
+       private Integer age;
+   
+       @RequestMapping("/test")
+       public R test(){
+           return R.ok().put("name",name).put("age",age);
+       }
+       
+       ...
+       
+   }
+   ```
+
+   运行微服务，访问网页http://localhost:7000/coupon/coupon/test，可以看到配置的值，在nacos中修改配置，再次访问，如果变化则说明已经奏效。
 
 
 
+## 网关
 
+使用Spring Initializr创建模块，Group为com.atguigu.gulimall，Artifact为gulimall-gateway，package为com.atguigu.gulimall.gateway，搜索gateway选中。按照前边版本变更一节对pom进行修改，并引入common依赖。
 
+为gulimall-gateway配置nacos注册中心和nacos配置中心，修改端口号为88，配置路由条件。详细操作为
 
+在nacos网页中创建命名空间gateway，然后在该命名空间中创建数据集gulimall-gateway.yml，分组为默认分组，内容为
 
+```yml
+spring:
+    application:
+        name: gulimall-gateway
+```
 
+application.properties修改为
 
+```properties
+# 注册中心
+spring.cloud.nacos.discovery.server-addr=127.0.0.1:8848
+spring.application.name=gulimall-gateway
+server.port=88
+```
 
+application.yml修改为
 
+```yml
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test_route
+          uri: https://www.baidu.com
+          predicates:
+            - Query=url,baidu
 
+        - id: qq_route
+          uri: https://www.qq.com
+          predicates:
+            - Query=url,qq
+```
 
+bootstrap.properties修改为
 
+```properties
+# 配置中心
+spring.application.name=gulimall-gateway
+spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+spring.cloud.nacos.config.namespace=780763eb-4007-4bc9-80e9-24336c8ef6c1
+```
 
-
-
-
+打开网页 http://localhost:88/hello?url=qq ，如果可以导航到qq网站（可能没页面，因为qq没有hello对应的界面，只要跳转了就行），说明配置成功。
 
 
 
