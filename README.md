@@ -459,7 +459,7 @@ sudo docker update mysql --restart=always
 
 - 使用MySQL Workbench 8.0 CE或者其他数据库连接软件连接数据库
 
-  ![MySQL_Workbench连接数据库](readme_pics\MySQL_Workbench连接数据库.png)
+  ![MySQL_Workbench连接数据库](readme_pics/MySQL_Workbench连接数据库.png)
 
 - 创建数据库，编码方式使用utf8mb4，名字依次为
 
@@ -927,6 +927,32 @@ server:
 - order设置为9000
 - product设置为10000
 - ware设置为11000
+
+
+
+## 分布式配置
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
