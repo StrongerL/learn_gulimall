@@ -1234,7 +1234,7 @@ public R test(){
    }
    ```
 
-   运行微服务，访问网页http://localhost:7000/coupon/coupon/test，可以看到配置的值，在nacos中修改配置，再次访问，如果变化则说明已经奏效。
+   运行微服务，访问网页 http://localhost:7000/coupon/coupon/test ，可以看到配置的值，在nacos中修改配置，再次访问，如果变化则说明已经奏效。
 
 
 
@@ -1289,14 +1289,4 @@ spring.cloud.nacos.config.namespace=780763eb-4007-4bc9-80e9-24336c8ef6c1
 ```
 
 打开网页 http://localhost:88/hello?url=qq ，如果可以导航到qq网站（可能没页面，因为qq没有hello对应的界面，只要跳转了就行），说明配置成功。
-
-
-
-
-
-
-
-
-
-
 
