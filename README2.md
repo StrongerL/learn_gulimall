@@ -93,22 +93,6 @@
 
 
 
-运行renren-fast-vue和renren-fast，登录，账户名密码均为admin。
-
-登录后
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### 跨域问题
 
 // todo
@@ -119,6 +103,8 @@
 
 // 明明做好了上述工作，但是依然显示跨域。。。重启了idea、chrome，自己好了。。。
 
+
+
 ### 分类信息的显示
 
 // todo
@@ -128,6 +114,130 @@
 gateway中设置路由规则，注意精确的路由放在前边，否则可能会被更模糊的先拦截
 
 修改renren-fast-vue，显示分类信息
+
+
+
+### 前端显示删除等按钮
+
+为el-tree加入按钮
+
+```vue
+<span class="custom-tree-node" slot-scope="{ node, data }">
+    <span>{{ node.label }}</span>
+    <span>
+      <el-button type="text" size="mini" @click="() => append(data)">Append</el-button>
+      <el-button type="text" size="mini" @click="() => remove(node, data)">Delete</el-button>
+    </span>
+</span>
+```
+
+加入方法
+
+```vue
+append(data) {},
+remove(node, data) {}
+```
+
+为el-tree添加属性
+
+```vue
+<el-tree
+    :data="menus"
+    :props="defaultProps"
+    expand-on-click-node="false"
+    show-checkbox
+    node-key="catId"
+>
+```
+
+此处我有一个疑问？这里是如何找到catId的，代码中似乎并没有体现他是在node中还是data中，也没有指明路径。
+
+添加判断条件，增加删除只在需要出现的时候出现
+
+
+
+### 实现删除功能（50 - 51集）
+
+@RequestBody需要请求体，因此需要post请求
+
+后端
+
+编写删除代码
+
+使用逻辑删除
+
+1. 配置逻辑删除规则（可省略）
+2. 实体类添加@TableLogic注解
+
+调整日志级别为debug观察sql语句
+
+前端
+
+remove函数
+
+弹框确认
+
+确认消息
+
+展开
+
+### 实现新增功能（52集）
+
+对话框，以及对应的显示标志
+
+添加表单，以及对应的表单数据
+
+创建表单提交的函数
+
+append函数设置一些默认值
+
+表单提交的函数具体实现
+
+一个bug的解决
+
+具体的表现为：新增一个二级分类，可以正常显示，为已有的二级分类添加一个三级分类，也可以正常显示；但是为新增的一个二级分类添加一个三级分类，却不能正常显示，原因出在com/atguigu/gulimall/product/service/impl/CategoryServiceImpl.java中的getChildren(CategoryEntity root,List\<CategoryEntity\> all)方法上，getParentCid()和getCatId()方法返回的都是Long对象而非long基本数据类型，所以比较是否相等应该使用equals()方法。
+
+```java
+private List<CategoryEntity> getChildren(CategoryEntity root,List<CategoryEntity> all){
+
+    List<CategoryEntity> children = all.stream().filter(categoryEntity -> {
+        // 这里的比较是有问题的，应该修改为
+        // return categoryEntity.getParentCid().equals(root.getCatId());
+        return categoryEntity.getParentCid() == root.getCatId();
+    }).map(categoryEntity -> {
+        categoryEntity.setChildren(getChildren(categoryEntity,all));
+        return categoryEntity;
+    }).sorted((menu1,menu2)->{
+        return (menu1.getSort()==null?0:menu1.getSort()) - (menu2.getSort()==null?0:menu2.getSort());
+    }).collect(Collectors.toList());
+
+    return children;
+}
+```
+
+那么为什么已有的二级分类新增三级分类可以正常显示呢？在[-128, 127]范围内的类对象，如果值相同，那么他们的地址也是相同的，都指向常量池中的同一个对象，超出了这个范围地址就不一样。已有的二级分类的catI范围均在[-128, 127]内，而新增的二级分类的catId超出了这个范围，所以使用==进行比较，值相同也会返回false。
+
+### 实现修改功能（53集）
+
+添加修改按钮
+
+修改对话框和新增分类的方法
+
+添加edit方法
+
+添加提交方法
+
+### 实现拖拽功能（54 - 56集）
+
+为el-tree添加拖拽属性和拖拽判断方法
+
+添加监听事件，拖拽成功后，更新父id、排序、层级
+
+后台接口
+
+
+
+
 
 
 

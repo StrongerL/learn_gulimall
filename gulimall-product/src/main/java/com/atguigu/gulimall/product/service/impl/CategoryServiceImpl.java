@@ -48,11 +48,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return level1Menus;
     }
 
+    @Override
+    public void removeMenuByIds(List<Long> asList) {
+        //TODO  1、检查当前删除的菜单，是否被别的地方引用
+
+        //逻辑删除
+        baseMapper.deleteBatchIds(asList);
+    }
+
     //递归查找所有菜单的子菜单
     private List<CategoryEntity> getChildren(CategoryEntity root,List<CategoryEntity> all){
 
         List<CategoryEntity> children = all.stream().filter(categoryEntity -> {
-            return categoryEntity.getParentCid() == root.getCatId();
+            return categoryEntity.getParentCid().equals(root.getCatId());
         }).map(categoryEntity -> {
             //1、找到子菜单
             categoryEntity.setChildren(getChildren(categoryEntity,all));
