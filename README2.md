@@ -235,15 +235,105 @@ private List<CategoryEntity> getChildren(CategoryEntity root,List<CategoryEntity
 
 后台接口
 
+### 拖拽完善（57集）
 
+添加拖拽按钮
 
+批量保存
 
+### 批量删除（58集）
 
+删除按钮
 
+对应的删除方法
 
+## 品牌管理
 
+### 新增品牌管理（59集）
 
+创建菜单
 
+复制生成的组件
+
+权限
+
+### 优化页面（60集）
+
+显示状态文本
+
+自定义格式
+
+修改界面
+
+对应的事件函数
+
+### 文件上传（61 - 62集）
+
+阿里云oss开通与使用
+
+文件上传代码
+
+子账户
+
+直接使用阿里云oss starter而非自己创建，这是[网址](https://github.com/alibaba/aliyun-spring-boot/tree/master/aliyun-spring-boot-samples/aliyun-oss-spring-boot-sample)
+
+- 引入starter依赖
+- 配置
+- 自动注入
+
+### 第三方服务（63集）
+
+创建一个module
+
+引入oss
+
+配置中心（首先改一下pom中的版本）
+
+注册中心
+
+排除mybatis
+
+端口
+
+签名后直传
+
+网关
+
+### 前端上传（64集）
+
+upload文件夹
+
+上传组件action更改
+
+导入组件
+
+oss跨域配置
+
+### 前端新增品牌完善（65集）
+
+表格宽度
+
+显示状态绑定
+
+显示图片
+
+// 导入Image等组件
+
+自定义校验首字母和sort
+
+默认值
+
+### 后端校验
+
+JSR303
+
+字段添加校验注解，自定义错误提示
+
+接收时添加开启校验的注解
+
+紧跟BingingResult获取错误信息
+
+自定义注解，可以使用正则表达式
 
 
 
