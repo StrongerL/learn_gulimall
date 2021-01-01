@@ -12,7 +12,7 @@ import lombok.Data;
  * 
  * @author stronger
  * @email 123456@gmail.com
- * @date 2020-12-11 15:57:36
+ * @date 2020-12-24 16:20:38
  */
 @Data
 @TableName("pms_attr")
@@ -32,6 +32,10 @@ public class AttrEntity implements Serializable {
 	 * 是否需要检索[0-不需要，1-需要]
 	 */
 	private Integer searchType;
+	/**
+	 * 值的类型
+	 */
+	private Integer valueType;
 	/**
 	 * 属性图标
 	 */

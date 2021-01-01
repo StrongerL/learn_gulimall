@@ -8,11 +8,3 @@ spring:
 
 server:
   port: 30000
-
-#alibaba:
-#  cloud:
-#    access-key: LTAI4GL9napCXtt2hdAVYjpP
-#    secret-key: shGar9OoJ2V8ehjWYGdtAnp1LTz6oC
-#    oss:
-#      endpoint: oss-cn-hangzhou.aliyuncs.com
-#      bucket: learn-gulimall-liu

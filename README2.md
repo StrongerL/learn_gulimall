@@ -363,6 +363,70 @@ groups属性
 
 分割修改和修改状态
 
+## 商品属性
+
+### SPU和SKU（70）
+
+spu/sku
+
+基本属性spu
+
+销售属性sku
+
+数据库表的解释
+
+修改数据库表pms_attr
+
+```sql
+drop table if exists pms_attr;
+
+/*==============================================================*/
+/* Table: pms_attr                                              */
+/*==============================================================*/
+create table pms_attr
+(
+   attr_id              bigint not null auto_increment comment '属性id',
+   attr_name            char(30) comment '属性名',
+   search_type          tinyint comment '是否需要检索[0-不需要，1-需要]',
+   value_type           tinyint comment '值的类型',
+   icon                 varchar(255) comment '属性图标',
+   value_select         char(255) comment '可选值列表[用逗号分隔]',
+   attr_type            tinyint comment '属性类型[0-销售属性，1-基本属性，2-既是销售属性又是基本属性]',
+   enable               bigint comment '启用状态[0 - 禁用，1 - 启用]',
+   catelog_id           bigint comment '所属分类',
+   show_desc            tinyint comment '快速展示【是否展示在介绍上；0-否 1-是】，在sku中仍然可以调整',
+   primary key (attr_id)
+);
+
+alter table pms_attr comment '商品属性';
+```
+
+重新生成相关文件并替换
+
+AttrEntity.java和AttrDao.xml
+
+### 属性分组前端（71）
+
+admin执行sql
+
+接口文档
+
+抽出商品分类组件
+
+创建属性分组组件
+
+父子组件传递数据
+
+### 属性分组后端与前端查询（72）
+
+后端controller、service、serviceimpl
+
+前端查询时加入id
+
+
+
+
+
 
 
 
