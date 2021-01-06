@@ -1,5 +1,6 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.common.constant.ProductConstant;
 import com.atguigu.gulimall.product.dao.AttrAttrgroupRelationDao;
 import com.atguigu.gulimall.product.dao.AttrGroupDao;
 import com.atguigu.gulimall.product.dao.CategoryDao;
@@ -64,17 +65,19 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         BeanUtils.copyProperties(attr, attrEntity);
         //1、保存基本数据
         this.save(attrEntity);
-        //2、保存关联关系
-        AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
-        relationEntity.setAttrGroupId(attr.getAttrGroupId());
-        relationEntity.setAttrId(attrEntity.getAttrId());
-        relationDao.insert(relationEntity);
+        if (attr.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() && attr.getAttrGroupId() != null) {
+            //2、保存关联关系
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+            relationEntity.setAttrGroupId(attr.getAttrGroupId());
+            relationEntity.setAttrId(attrEntity.getAttrId());
+            relationDao.insert(relationEntity);
+        }
     }
 
     @Override
-    public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId) {
+    public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String type) {
 
-        QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<AttrEntity>().eq("attr_type", "base".equalsIgnoreCase(type) ? ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() : ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode());
 
         if (catelogId != 0) {
             queryWrapper.eq("catelog_id", catelogId);
@@ -97,10 +100,12 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             AttrRespVo attrRespVo = new AttrRespVo();
             BeanUtils.copyProperties(attrEntity, attrRespVo);
             // 设置属性分组名称
-            AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
-            if (attrAttrgroupRelationEntity != null && attrAttrgroupRelationEntity.getAttrGroupId() != null) {
-                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrAttrgroupRelationEntity.getAttrGroupId());
-                attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
+            if ("base".equalsIgnoreCase(type)) {
+                AttrAttrgroupRelationEntity attrAttrgroupRelationEntity = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
+                if (attrAttrgroupRelationEntity != null && attrAttrgroupRelationEntity.getAttrGroupId() != null) {
+                    AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrAttrgroupRelationEntity.getAttrGroupId());
+                    attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
+                }
             }
             // 设置分类名称
             CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getCatelogId());
@@ -121,13 +126,15 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         AttrEntity attrEntity = this.getById(attrId);
         BeanUtils.copyProperties(attrEntity, respVo);
 
-        //1、设置分组信息
-        AttrAttrgroupRelationEntity attrgroupRelation = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId));
-        if (attrgroupRelation != null) {
-            respVo.setAttrGroupId(attrgroupRelation.getAttrGroupId());
-            AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupRelation.getAttrGroupId());
-            if (attrGroupEntity != null) {
-                respVo.setGroupName(attrGroupEntity.getAttrGroupName());
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+            //1、设置分组信息
+            AttrAttrgroupRelationEntity attrgroupRelation = relationDao.selectOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrId));
+            if (attrgroupRelation != null) {
+                respVo.setAttrGroupId(attrgroupRelation.getAttrGroupId());
+                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attrgroupRelation.getAttrGroupId());
+                if (attrGroupEntity != null) {
+                    respVo.setGroupName(attrGroupEntity.getAttrGroupName());
+                }
             }
         }
 
@@ -150,20 +157,21 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         BeanUtils.copyProperties(attr, attrEntity);
         this.updateById(attrEntity);
 
-        AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
+        if (attrEntity.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode()) {
+            AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();
 
-        relationEntity.setAttrGroupId(attr.getAttrGroupId());
-        relationEntity.setAttrId(attr.getAttrId());
+            relationEntity.setAttrGroupId(attr.getAttrGroupId());
+            relationEntity.setAttrId(attr.getAttrId());
 
-        Integer count = relationDao.selectCount(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
-        if (count > 0) {
+            Integer count = relationDao.selectCount(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+            if (count > 0) {
 
-            relationDao.update(relationEntity, new UpdateWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
+                relationDao.update(relationEntity, new UpdateWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attr.getAttrId()));
 
-        } else {
-            relationDao.insert(relationEntity);
+            } else {
+                relationDao.insert(relationEntity);
+            }
         }
-
     }
 
 }
