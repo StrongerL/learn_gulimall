@@ -489,7 +489,11 @@ mybatis plus分页插件
 
 批量删除关联
 
+### 81、商品服务-API-平台属性-查询分组未关联的属性
 
+@GetMapping("/{attrgroupId}/noattr/relation")
+
+AttrGroupController -> service -> impl
 
 
 
