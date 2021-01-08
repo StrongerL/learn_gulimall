@@ -501,7 +501,13 @@ AttrGroupController -> service -> impl
 
 AttrGroupController -> AttrAttrgroupRelationService -> AttrAttrgroupRelationServiceImpl
 
+### 83、商品服务-API-新增商品-调试会员等级相关接口
 
+member网关配置
+
+复制前端代码
+
+添加几个会员等级
 
 
 
