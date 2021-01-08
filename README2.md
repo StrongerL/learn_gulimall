@@ -495,9 +495,11 @@ mybatis plus分页插件
 
 AttrGroupController -> service -> impl
 
+### 82、商品服务-API-平台属性-新增分组与属性关联
 
+@PostMapping("/attr/relation")
 
-
+AttrGroupController -> AttrAttrgroupRelationService -> AttrAttrgroupRelationServiceImpl
 
 
 
