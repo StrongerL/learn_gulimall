@@ -562,6 +562,24 @@ to包
 
 @PostMapping("/coupon/skufullreduction/saveinfo")
 
+### 91、商品服务-API-新增商品-商品保存debug完成
+
+限制服务内存
+
+com.atguigu.gulimall.product.entity.SpuInfoDescEntity中添加注解@TableId(type = IdType.INPUT)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
