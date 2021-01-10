@@ -532,6 +532,26 @@ AttrGroupWithAttrsVo
 
 准备vo
 
+### 87、商品服务-API-新增商品-商品新增业务流程分析
+
+流程分析
+
+### 88、商品服务-API-新增商品-保存SPU基本信息
+
+/product/spuinfo/save
+
+spuInfoService.saveSpuInfo(vo);前四步
+
+
+
+
+
+
+
+
+
+
+
 
 
 
