@@ -568,7 +568,9 @@ to包
 
 com.atguigu.gulimall.product.entity.SpuInfoDescEntity中添加注解@TableId(type = IdType.INPUT)
 
+### 92、商品服务-API-新增商品-商品保存其他问题处理
 
+由于直接复制粘贴的，所以这里不需要再改了。
 
 
 
