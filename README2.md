@@ -542,6 +542,10 @@ AttrGroupWithAttrsVo
 
 spuInfoService.saveSpuInfo(vo);前四步
 
+### 89、商品服务-API-新增商品-保存SKU基本信息
+
+5.1、5.2、5.3
+
 
 
 
