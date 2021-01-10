@@ -526,6 +526,12 @@ AttrGroupWithAttrsVo
 
 /product/attrgroup/{catelogId}/withattr
 
+### 86、商品服务-API-新增商品-商品新增vo抽取
+
+新增商品信息
+
+准备vo
+
 
 
 
