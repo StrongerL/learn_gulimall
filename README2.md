@@ -546,17 +546,21 @@ spuInfoService.saveSpuInfo(vo);前四步
 
 5.1、5.2、5.3
 
+### 90、商品服务-API-新增商品-调用远程服务保存优惠等信息
 
+feign包
 
+开启feign
 
+to包
 
+远程服务
 
+修改R类
 
+@PostMapping("/coupon/spubounds/save")
 
-
-
-
-
+@PostMapping("/coupon/skufullreduction/saveinfo")
 
 
 

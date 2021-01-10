@@ -1,7 +1,10 @@
 package com.atguigu.gulimall.product.service.impl;
 
+import com.atguigu.common.to.SkuReductionTo;
+import com.atguigu.common.to.SpuBoundTo;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.product.entity.*;
+import com.atguigu.gulimall.product.feign.CouponFeignService;
 import com.atguigu.gulimall.product.service.*;
 import com.atguigu.gulimall.product.vo.*;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +50,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
     @Autowired
     SkuSaleAttrValueService skuSaleAttrValueService;
+
+    @Autowired
+    CouponFeignService couponFeignService;
 
 
     @Override
@@ -97,11 +103,25 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }).collect(Collectors.toList());
         attrValueService.saveProductAttr(collect);
 
+
+        //5、保存spu的积分信息；gulimall_sms->sms_spu_bounds
+        Bounds bounds = vo.getBounds();
+        SpuBoundTo spuBoundTo = new SpuBoundTo();
+        BeanUtils.copyProperties(bounds,spuBoundTo);
+        spuBoundTo.setSpuId(infoEntity.getId());
+        R r = couponFeignService.saveSpuBounds(spuBoundTo);
+        if(r.getCode() != 0){
+            log.error("远程保存spu积分信息失败");
+        }
+
+
         //5、保存当前spu对应的所有sku信息；
 
         List<Skus> skus = vo.getSkus();
         if(skus!=null && skus.size()>0){
             skus.forEach(item->{
+
+                //5.1）、sku的基本信息；pms_sku_info
                 String defaultImg = "";
                 for (Images image : item.getImages()) {
                     if(image.getDefaultImg() == 1){
@@ -119,11 +139,10 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 skuInfoEntity.setSaleCount(0L);
                 skuInfoEntity.setSpuId(infoEntity.getId());
                 skuInfoEntity.setSkuDefaultImg(defaultImg);
-                //5.1）、sku的基本信息；pms_sku_info
                 skuInfoService.saveSkuInfo(skuInfoEntity);
 
+                //5.2）、sku的图片信息；pms_sku_image
                 Long skuId = skuInfoEntity.getSkuId();
-
                 List<SkuImagesEntity> imagesEntities = item.getImages().stream().map(img -> {
                     SkuImagesEntity skuImagesEntity = new SkuImagesEntity();
                     skuImagesEntity.setSkuId(skuId);
@@ -134,29 +153,32 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                     //返回true就是需要，false就是剔除
                     return !StringUtils.isEmpty(entity.getImgUrl());
                 }).collect(Collectors.toList());
-                //5.2）、sku的图片信息；pms_sku_image
                 skuImagesService.saveBatch(imagesEntities);
                 //TODO 没有图片路径的无需保存
 
+                //5.3）、sku的销售属性信息：pms_sku_sale_attr_value
                 List<Attr> attr = item.getAttr();
                 List<SkuSaleAttrValueEntity> skuSaleAttrValueEntities = attr.stream().map(a -> {
                     SkuSaleAttrValueEntity attrValueEntity = new SkuSaleAttrValueEntity();
                     BeanUtils.copyProperties(a, attrValueEntity);
                     attrValueEntity.setSkuId(skuId);
-
                     return attrValueEntity;
                 }).collect(Collectors.toList());
-                //5.3）、sku的销售属性信息：pms_sku_sale_attr_value
                 skuSaleAttrValueService.saveBatch(skuSaleAttrValueEntities);
 
+                // //5.4）、sku的优惠、满减等信息；gulimall_sms->sms_sku_ladder\sms_sku_full_reduction\sms_member_price
+                SkuReductionTo skuReductionTo = new SkuReductionTo();
+                BeanUtils.copyProperties(item,skuReductionTo);
+                skuReductionTo.setSkuId(skuId);
+                if(skuReductionTo.getFullCount() >0 || skuReductionTo.getFullPrice().compareTo(new BigDecimal("0")) == 1){
+                    R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+                    if(r1.getCode() != 0){
+                        log.error("远程保存sku优惠信息失败");
+                    }
+                }
 
             });
         }
-
-
-
-
-
     }
 
     @Override
