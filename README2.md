@@ -509,13 +509,22 @@ member网关配置
 
 添加几个会员等级
 
+### 84、商品服务-API-新增商品-获取分类关联的品牌
 
+解决前端错误
 
+- npm install --save pubsub-js
+- 在src下的main.js中引用：
+  import PubSub from 'pubsub-js'
+  Vue.prototype.PubSub = PubSub
 
+CategoryBrandRelationController -> @GetMapping("/brands/list")
 
+### 85、商品服务-API-新增商品-获取分类下所有分组以及属性
 
+AttrGroupWithAttrsVo
 
-
+/product/attrgroup/{catelogId}/withattr
 
 
 
