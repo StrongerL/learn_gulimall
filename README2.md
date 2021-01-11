@@ -598,5 +598,21 @@ mybatis plus配置
 
 /ware/wareinfo/list
 
+### 96、仓储服务-API-仓库管理-查询库存&创建采购需求
+
+/ware/waresku/list
+
+/ware/purchasedetail/list
+
+
+
+
+
+
+
+
+
+
+
 
 
