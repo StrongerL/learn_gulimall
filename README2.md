@@ -580,9 +580,11 @@ com.atguigu.gulimall.product.entity.SpuInfoDescEntity中添加注解@TableId(typ
 
 yml调整日期格式
 
+### 94、商品服务-API-商品管理-SKU检索
 
+/product/skuinfo/list
 
-
+spu纠错（无需修改）
 
 
 
