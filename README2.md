@@ -622,6 +622,38 @@ mybatis plus配置
 
 配置分页
 
+### 100、商品服务-API-商品管理-SPU规格维护
+
+/product/attr/base/listforspu/{spuId}
+
+前端2个问题
+
+- 页面404
+
+  ```js
+  // 在/src/router/index.js 在mainRoutes->children添加
+  { path: '/product-attrupdate', component: _import('modules/product/attrupdate'), name: 'attr-update', meta: { title: '规格维护', isTab: true } }
+  ```
+
+- 回显问题
+
+  ```js
+  // attrupdate.vue的showBaseAttrs中
+  if (v.length == 1) {
+        v = v【0】 + ''
+   }
+  // 修改为
+  if (v.length == 1 && attr.valueType == 0) {
+       v = v【0】 + ''
+   }
+  ```
+
+/product/attr/update/{spuId}
+
+
+
+
+
 
 
 
