@@ -650,7 +650,9 @@ mybatis plus配置
 
 /product/attr/update/{spuId}
 
+### 101、分布式基础篇总结
 
+![分布式基础篇总结](readme_pics\分布式基础篇总结.png)
 
 
 
