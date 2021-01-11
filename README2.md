@@ -586,9 +586,17 @@ yml调整日期格式
 
 spu纠错（无需修改）
 
+### 95、仓储服务-API-仓库管理-整合ware服务&获取仓库列表
 
+ware加入注册中心
 
+网关配置
 
+mybatis plus配置
+
+日志级别
+
+/ware/wareinfo/list
 
 
 
