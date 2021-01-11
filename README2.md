@@ -572,9 +572,13 @@ com.atguigu.gulimall.product.entity.SpuInfoDescEntity中添加注解@TableId(typ
 
 由于直接复制粘贴的，所以这里不需要再改了。
 
+### 93、商品服务-API-商品管理-SPU检索
 
+/product/spuinfo/list
 
+前端修改新建等对应的编码（无需修改）
 
+yml调整日期格式
 
 
 
