@@ -604,11 +604,13 @@ mybatis plus配置
 
 /ware/purchasedetail/list
 
+### 97、仓储服务-API-仓库管理-合并采购需求
 
+/ware/purchase/unreceive/list
 
+/ware/purchase/merge
 
-
-
+时间格式
 
 
 
