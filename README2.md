@@ -612,6 +612,12 @@ mybatis plus配置
 
 时间格式
 
+### 98、仓储服务-API-仓库管理-领取采购单
+
+/ware/purchase/received
+
+
+
 
 
 

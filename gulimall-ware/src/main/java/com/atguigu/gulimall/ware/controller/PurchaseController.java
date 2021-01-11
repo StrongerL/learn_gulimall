@@ -1,6 +1,7 @@
 package com.atguigu.gulimall.ware.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 // import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -96,6 +97,18 @@ public class PurchaseController {
     public R merge(@RequestBody MergeVo mergeVo){
 
         purchaseService.mergePurchase(mergeVo);
+        return R.ok();
+    }
+
+    /**
+     * 领取采购单
+     * @return
+     */
+    @PostMapping("/received")
+    public R received(@RequestBody List<Long> ids){
+
+        purchaseService.received(ids);
+
         return R.ok();
     }
 
