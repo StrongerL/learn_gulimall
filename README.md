@@ -46,7 +46,7 @@ config.vm.synced_folder "./vagrant_share", "/vagrant", disabled:true
 # 磁盘大小，需要首先使用命令vagrant plugin install vagrant-disksize安装插件
 # 只能增大磁盘大小，并没有挂载磁盘分区，如果需要起作用，还需要进一步设置，此处其实无用
 config.disksize.size = "70GB"
-# 配置网络
+# 配置网络，在虚拟机网关的网段内，并且要和主机互相ping通
 config.vm.network "private_network", ip: "192.168.56.10"
 
 # ==================================完整的文件===============================================
@@ -199,7 +199,7 @@ $ sudo docker images
 # 开机自启动
 $ sudo systemctl enable docker
 
-# 镜像加速
+# 镜像加速（阿里云镜像加速器）
 sudo mkdir -p /etc/docker
 sudo tee /etc/docker/daemon.json <<-'EOF'
 {
@@ -297,6 +297,10 @@ docker restart redis
 ```
 
 
+
+### 安装redis可视化工具
+
+按照向导安装即可。
 
 ### 安装maven
 
@@ -541,7 +545,7 @@ npm install
 npm install报错：chromedriver@2.27.2 install: node install.js
 解决：
 如果执行过npm install，先删除 node_modules 文件夹，不然运行的时候可能会报错
-执行下面的命令
+然后执行下面的命令
 npm install chromedriver --chromedriver_cdnurl=http://cdn.npm.taobao.org/dist/chromedriver
 再执行 npm install 即可正常下载
 

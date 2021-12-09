@@ -11,9 +11,12 @@
 
     <modules>
         <module>gulimall-coupon</module>
+        <module>gulimall-gateway</module>
         <module>gulimall-member</module>
         <module>gulimall-order</module>
         <module>gulimall-product</module>
+        <module>gulimall-search</module>
+        <module>gulimall-third-party</module>
         <module>gulimall-ware</module>
         <module>renren-fast</module>
         <module>renren-generator</module>
