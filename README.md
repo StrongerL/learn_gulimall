@@ -2,11 +2,53 @@
 
 仅用于本人记录自己的学习过程，这里是[教程网址](https://www.bilibili.com/video/BV1np4y1C7Yf)。
 
+还需要学习的内容：
+
+1. mybatis、mybatis-plus
+2. idea
+3. docker
 
 
-## 环境配置
 
-### virtualBox安装
+
+
+## 运行项目
+
+版本要求：
+
+- JDK: 1.8
+- Maven: 3.6.1
+- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 项目架构（1 - 5集）
+
+谷粒商城是一个 B2C 模式的电商平台，销售自营商品给客户。（B2C (Business to Consumer)， 就是我们经常看到的供应商直接把商品卖给用户，即“商对客” 模式，也就是通常说的商业零售，直接面向消费者销售产品和服务。如：苏宁易购、京东、天猫、小米商城。）
+
+谷粒商城架构图
+
+![谷粒商城-微服务架构图](readme_pics/谷粒商城-微服务架构图.png)
+
+微服务的划分图
+
+![image-20220307223145415](readme_pics/谷粒商城-微服务划分图.png)
+
+
+
+## 环境配置（6 - 13集）
+
+### virtualBox安装（6集）
 
 安装前
 
@@ -24,7 +66,7 @@
 
 
 
-### vagrant安装与使用
+### vagrant安装与使用（7集）
 
 安装
 
@@ -160,7 +202,7 @@ root用户密码为vagrant
 
 
 
-### 安装docker
+### 安装docker（8 - 9集）
 
 ```shell
 # ssh连接到虚拟机
@@ -228,7 +270,7 @@ docker rmi 镜像id
 
 
 
-### 安装mysql
+### 安装mysql（10集）
 
 ```shell
 # 下载镜像
@@ -269,7 +311,7 @@ docker restart mysql
 
 
 
-### 安装redis
+### 安装redis（11集）
 
 ```shell
 # 下载镜像
@@ -298,11 +340,11 @@ docker restart redis
 
 
 
-### 安装redis可视化工具
+### 安装redis可视化工具（11集）
 
 按照向导安装即可。
 
-### 安装maven
+### 安装maven（12集）
 
 安装
 
@@ -342,7 +384,7 @@ docker restart redis
 
 
 
-### IDEA配置
+### IDEA配置（12集）
 
 #### 配置maven
 
@@ -358,7 +400,7 @@ lombok、MyBatisx
 
 
 
-### VS Code 配置
+### VS Code 配置（12集）
 
 安装
 
@@ -377,13 +419,13 @@ lombok、MyBatisx
 - open in browser
 - Vetur
 
-### 配置git
+### 配置git（13集）
 
 略。
 
-## 搭建项目框架
+## 搭建项目框架（14 - 16集）
 
-### 创建初始项目
+### 创建初始项目（14集）
 
 - 使用github或者码云创建项目
 
@@ -453,7 +495,7 @@ lombok、MyBatisx
 
   
 
-### 配置数据库
+### 配置数据库（15集）
 
 ```shell
 # 进入虚拟机，设置redis和mysql自动启动
@@ -477,7 +519,7 @@ sudo docker update mysql --restart=always
 
   复制sql文件，执行。
 
-### 搭建后台
+### 搭建后台（16集）
 
 使用人人开源中的[renren-fast](https://gitee.com/renrenio/renren-fast)作为脚手架。
 
@@ -526,7 +568,7 @@ password: root
 
 
 
-### 搭建前端
+### 搭建前端（16集）
 
 使用人人开源中的[renren-fast-vue](https://gitee.com/renrenio/renren-fast-vue)作为脚手架
 
@@ -559,7 +601,7 @@ npm run dev
 
 
 
-## 生成代码
+## 生成代码（17集）
 
 使用人人开源的[renren-generator](https://gitee.com/renrenio/renren-generator)项目生成相关代码，以gulimall-product为例。
 
@@ -704,7 +746,7 @@ npm run dev
 
   
 
-## 整合代码
+## 整合代码（17集）
 
 删除main/resource中的src
 
@@ -777,7 +819,7 @@ npm run dev
 
 修复gulimall-product中的错误。如果缺少共有的依赖，就上网搜依赖的maven，并添加到gulimall-common中；如果缺少文件，就到renren-fast项目中寻找，也添加到gulimall-common中。
 
-## 整合mybatis plus
+## 整合mybatis plus（18集）
 
 1. 在gulimall-common的pom中导入mabatis plus依赖（前边已经添加）
 
