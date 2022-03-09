@@ -18,7 +18,8 @@
 
 - JDK: 1.8
 - Maven: 3.6.1
-- 
+- springboot：2.1.8.RELEASE
+- spring-cloud: Greenwich.SR3
 
 
 
@@ -885,7 +886,7 @@ npm run dev
 
          
 
-## 其他模块
+## 其他模块（19集）
 
 ### 一般流程
 
@@ -976,7 +977,7 @@ server:
 
 
 
-## 版本变更
+## 版本变更（自己）
 
 由于之前使用的一些配置版本和教程不一致，出现了很多不必要的问题，所以首先改一下版本。
 
@@ -1006,7 +1007,13 @@ gulimall-***(coupon/member/order/product/ware)
 
 ## 分布式配置
 
-### nacos注册中心
+### 介绍（20集）
+
+见《02、SpringCloud组件.pdf》。
+
+
+
+### nacos注册中心（21集）
 
 可以参考[官方中文教程](https://github.com/alibaba/spring-cloud-alibaba/blob/master/spring-cloud-alibaba-examples/nacos-example/nacos-config-example/readme-zh.md)。
 
