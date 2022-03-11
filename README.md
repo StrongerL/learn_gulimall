@@ -10,9 +10,7 @@
 
 
 
-
-
-## 运行项目
+## 版本要求与安装软件
 
 版本要求：
 
@@ -21,13 +19,27 @@
 - springboot：2.1.8.RELEASE
 - spring-cloud: Greenwich.SR3
 
+安装软件：
+
+- 
 
 
 
+## 运行项目
 
+环境：
 
+1. 开启虚拟机
+2. 开启nacos
 
+后端：
 
+1. 依次开启renren-fast、gulimall-gateway、gulimall-third-party（使用的OSS要开启）微服务
+2. 运行你要用到的其他服务
+
+前端：
+
+1. npm start
 
 
 
@@ -1005,7 +1017,7 @@ gulimall-***(coupon/member/order/product/ware)
 
 
 
-## 分布式配置
+## 分布式配置（20 - 27集）
 
 ### 介绍（20集）
 
@@ -1080,7 +1092,7 @@ gulimall-***(coupon/member/order/product/ware)
 
    运行应用，刷新nacos网页的界面可以看到服务。
 
-### openfeign调用已注册的服务
+### openfeign调用已注册的服务（22集）
 
 使用member服务调用coupon服务中的，作为示例。
 
@@ -1166,11 +1178,11 @@ public R test(){
 
 
 
-### nacos配置中心
+### nacos配置中心（23 - 25集）
 
 使用配置中心可以将配置信息从application.properties等本地文件移动到nacos，这样做的好处有很多，如多个机器运行同一个服务，那么他们可以共享配置而无需一一配置。
 
-首先说明nacos配置空间的界面，数据集可以理解为配置文件，数据集id可以理解为文件名，命名空间可以理解为文件夹，用来分隔数据集，分组可以看作标签。
+首先说明nacos配置空间的界面，配置集（~~数据集，图里边写错了~~）可以理解为配置文件，配置集id可以理解为文件名，命名空间可以理解为文件夹，用来分隔数据集，分组可以看作标签。
 
 ![nacos配置中心](readme_pics\nacos配置中心.png)
 
@@ -1188,7 +1200,7 @@ public R test(){
    </dependency>
    ```
 
-2. 在coupon的resources目录下创建bootstrap.properties文件（与application.properties同一级目录），说明微服务的名称和nacos服务器的地址。微服务默认会加载服务器端的public命名空间的默认分组的gulimall-coupon.properties（${spring.application.name}.properties），如果nacos中的配置和本地的重名，优先使用nacos中的配置。
+2. 在coupon的resources目录下创建bootstrap.properties文件（与application.properties同一级目录，该文件会优先于application.properties加载），说明微服务的名称和nacos服务器的地址。微服务默认会加载服务器端的public命名空间的默认分组的gulimall-coupon.properties（${spring.application.name}.properties），如果nacos中的配置和本地的重名，优先使用nacos中的配置。
 
    ```properties
    spring.application.name=gulimall-coupon
@@ -1291,13 +1303,13 @@ public R test(){
 
 
 
-## 网关
+### 网关（26 - 27集）
 
 使用Spring Initializr创建模块，Group为com.atguigu.gulimall，Artifact为gulimall-gateway，package为com.atguigu.gulimall.gateway，搜索gateway选中。按照前边版本变更一节对pom进行修改，并引入common依赖。
 
 为gulimall-gateway配置nacos注册中心和nacos配置中心，修改端口号为88，配置路由条件。详细操作为
 
-在nacos网页中创建命名空间gateway，然后在该命名空间中创建数据集gulimall-gateway.yml，分组为默认分组，内容为
+在nacos网页中创建命名空间gateway，然后在该命名空间中创建配置集gulimall-gateway.yml，分组为默认分组，内容为
 
 ```yml
 spring:
