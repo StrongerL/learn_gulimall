@@ -320,6 +320,9 @@ skip-name-resolve
 
 # 重启mysql
 docker restart mysql
+
+# 开机启动
+sudo docker update mysql --restart=always
 ```
 
 
@@ -341,14 +344,19 @@ docker run -p 6379:6379 --name redis \
 
 # 进入redis容器
 docker exec -it redis redis-cli
+# 退出
+exit
 
 # 持久化
-vim /mydata/redis/conf/redis.conf
+vi /mydata/redis/conf/redis.conf
 # 插入下面内容
 appendonly yes
 
 # 重启
 docker restart redis
+
+# 开机启动
+sudo docker update redis --restart=always
 ```
 
 
@@ -356,6 +364,14 @@ docker restart redis
 ### 安装redis可视化工具（11集）
 
 按照向导安装即可。
+
+使用
+
+name：redis-gulimall
+
+host：192.168.56.10
+
+port：6379
 
 ### 安装maven（12集）
 
@@ -510,12 +526,6 @@ lombok、MyBatisx
 
 ### 配置数据库（15集）
 
-```shell
-# 进入虚拟机，设置redis和mysql自动启动
-sudo docker update redis --restart=always
-sudo docker update mysql --restart=always
-```
-
 - 使用MySQL Workbench 8.0 CE或者其他数据库连接软件连接数据库
 
   ![MySQL_Workbench连接数据库](readme_pics/MySQL_Workbench连接数据库.png)
@@ -566,7 +576,7 @@ git clone https://gitee.com/renrenio/renren-fast.git
 修改renren-fast的application-dev.yml中数据库信息，更改ip和数据库名称以及用户名密码
 
 ```yml
-url: jdbc:mysql://192.168.56.10:3306/gulimall_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+url: jdbc:mysql://192.168.56.10:3306/gulimall_admin?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
 username: root
 password: root
 ```
@@ -1087,6 +1097,8 @@ gulimall-***(coupon/member/order/product/ware)
    到网页[1.1.3(Aug 6th, 2019)](https://github.com/alibaba/nacos/releases/tag/1.1.3)下载[nacos-server-1.1.3.zip](https://github.com/alibaba/nacos/releases/download/1.1.3/nacos-server-1.1.3.zip)。
 
    下载后解压，双击bin目录下startup.cmd运行，打开网址 http://127.0.0.1:8848/nacos/ ，账号密码均为nacos，登陆后点开服务管理->服务列表。
+
+   如果闪退，需要配置一下JAVA_HOME环境变量。
 
 5. 运行微服务（以gulimall-member为例）
 
