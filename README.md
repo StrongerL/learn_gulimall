@@ -21,7 +21,11 @@
 
 安装软件：
 
-- 
+- nacos并做好相关配置
+- virtualBox，vagrant，并安装docker、mysql、redis等
+- node.js
+- git
+- maven
 
 
 
@@ -39,7 +43,7 @@
 
 前端：
 
-1. npm start
+1. npm start（首次运行需要先运行npm install）
 
 
 
@@ -598,6 +602,10 @@ password: root
 克隆项目
 
 配置node
+
+```
+npm config set registry https //registry.npm.taobao.org/
+```
 
 使用vscode打开项目
 
