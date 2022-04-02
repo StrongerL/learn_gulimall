@@ -1,4 +1,4 @@
-## 三级分类
+## 三级分类（45 - 58集）
 
 针对微服务gulimall-product。
 
@@ -243,7 +243,7 @@ private List<CategoryEntity> getChildren(CategoryEntity root,List<CategoryEntity
 
 对应的删除方法
 
-## 品牌管理
+## 品牌管理（59 - 69集）
 
 ### 新增品牌管理（59集）
 
@@ -457,7 +457,7 @@ mybatis plus分页插件
 
 ### 76、商品服务-API-平台属性-规格参数新增与VO
 
-属性分组 查询全部 加入参数（由于之前直接复制了，此处不用改了）
+属性分组 查询全部 加入参数
 
 新增规格参数的后端代码
 
