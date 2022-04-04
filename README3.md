@@ -66,22 +66,78 @@ docker update nginx --restart=always
 生成商品索引
 
 ```
-
+PUT product
+{
+    "mappings":{
+        "properties": {
+            "skuId":{ "type": "long" },
+            "spuId":{ "type": "keyword" },
+            "skuTitle": {
+                "type": "text",
+                "analyzer": "ik_smart"
+            },
+            "skuPrice": { "type": "keyword" },
+            "skuImg"  : { "type": "keyword" },
+            "saleCount":{ "type":"long" },
+            "hasStock": { "type": "boolean" },
+            "hotScore": { "type": "long"  },
+            "brandId":  { "type": "long" },
+            "catalogId": { "type": "long"  },
+            "brandName": {"type": "keyword"},
+            "brandImg":{
+                "type": "keyword",
+                "index": false,
+                "doc_values": false
+            },
+            "catalogName": {"type": "keyword" },
+            "attrs": {
+                "type": "nested",
+                "properties": {
+                    "attrId": {"type": "long"  },
+                    "attrName": {
+                        "type": "keyword",
+                        "index": false,
+                        "doc_values": false
+                    },
+                    "attrValue": {"type": "keyword" }
+                }
+            }
+        }
+    }
+}
 ```
 
 ## 129 nested字段分析
 
 不使用的话默认会进行扁平化处理。
 
-130 
+## 130 商品上架-构造基本数据
 
+1. 在common中添加ES相关的TO
+2. SpuInfoController 添加方法
+3. 对应的service和impl
 
+## 131 商品上架-构造SKU检索属性
 
+1. service、impl
+2. mapper、xml
 
+## 132 商品上架-远程查询库存
 
+1. ware的controller
+2. VO
+3. service、impl
+4. 使用泛型改造R
 
+## 133 商品上架-上架接口
 
+1. ES的controller
+2. 远程接口
+3. 修改上架状态
 
+## 134 - 135 商品上架-上架测试
+
+1. 重构R，之前的有错误。
 
 
 
