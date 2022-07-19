@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.gulimall.product.service.CategoryBrandRelationService;
 import com.atguigu.gulimall.product.vo.Catelog2Vo;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
@@ -33,6 +35,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Autowired
     StringRedisTemplate stringRedisTemplate;
+
+
+    @Autowired
+    RedissonClient redissonClient;
 
 
     @Override
@@ -122,6 +128,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 TimeUnit.MILLISECONDS.sleep(100);
                 return getCatalogJsonFromDbWithRedisLock(); // 自旋
             }
+        } else {
+            ans = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {
+            });
+        }
+        return ans;
+    }
+
+    public Map<String, List<Catelog2Vo>> getCatalogJsonFromDbWithRedisson() throws InterruptedException {
+
+        Map<String, List<Catelog2Vo>> ans = null;
+        String catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
+        if (catalogJson == null) {
+            // 加分布式锁
+            RLock lock = redissonClient.getLock("catalogJson-lock");
+            catalogJson = stringRedisTemplate.opsForValue().get("catalogJson");
+            if (catalogJson == null) {
+                Map<String, List<Catelog2Vo>> dataFromDb = getCatalogJsonFromDB();
+                stringRedisTemplate.opsForValue().set("catalogJson", JSON.toJSONString(dataFromDb), 1, TimeUnit.DAYS);
+                ans = dataFromDb;
+            } else {
+                ans = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
+            }
+            // 解锁
+            lock.unlock();
         } else {
             ans = JSON.parseObject(catalogJson, new TypeReference<Map<String, List<Catelog2Vo>>>() {});
         }
