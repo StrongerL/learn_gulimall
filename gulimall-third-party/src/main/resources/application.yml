@@ -3,6 +3,12 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+    alicloud:
+      sms:
+        host: https://wwsms.market.alicloudapi.com
+        path: /send_sms
+        appcode: f3ab13060935496c8a09c1bf809b5b24
+        template_id: TPL_0000
   application:
     name: gulimall-third-party
 
