@@ -1,6 +1,6 @@
 package com.atguigu.gulimall.search.controller;
 
-import com.atguigu.common.exception.BizCodeEnume;
+import com.atguigu.common.exception.BizCodeEnum;
 import com.atguigu.common.to.SkuEsModel;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.search.service.ProductSaveService;
@@ -13,13 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
-
-/**
- * @Description:
- * @Created: with IntelliJ IDEA.
- * @author: 夏沫止水
- * @createTime: 2020-06-06 16:48
- **/
 
 
 @Slf4j
@@ -44,11 +37,11 @@ public class ElasticSaveController {
         } catch (IOException e) {
             //log.error("商品上架错误{}",e);
 
-            return R.error(BizCodeEnume.PRODUCT_UP_EXCEPTION.getCode(), BizCodeEnume.PRODUCT_UP_EXCEPTION.getMsg());
+            return R.error(BizCodeEnum.PRODUCT_UP_EXCEPTION.getCode(), BizCodeEnum.PRODUCT_UP_EXCEPTION.getMessage());
         }
 
         if(status){
-            return R.error(BizCodeEnume.PRODUCT_UP_EXCEPTION.getCode(),BizCodeEnume.PRODUCT_UP_EXCEPTION.getMsg());
+            return R.error(BizCodeEnum.PRODUCT_UP_EXCEPTION.getCode(), BizCodeEnum.PRODUCT_UP_EXCEPTION.getMessage());
         }else {
             return R.ok();
         }

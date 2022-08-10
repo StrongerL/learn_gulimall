@@ -88,6 +88,13 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- 整合springsession -->
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
+
+
     </dependencies>
 
     <dependencyManagement>
